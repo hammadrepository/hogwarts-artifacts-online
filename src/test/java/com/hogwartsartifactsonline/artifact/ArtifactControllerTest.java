@@ -7,6 +7,7 @@ import com.hogwartsartifactsonline.artifact.converter.ArtifactToArtifactDTOConve
 import com.hogwartsartifactsonline.artifact.dto.ArtifactDTO;
 import com.hogwartsartifactsonline.system.Result;
 import com.hogwartsartifactsonline.system.StatusCode;
+import com.hogwartsartifactsonline.system.exception.ObjectNotFoundException;
 import com.hogwartsartifactsonline.wizard.Wizard;
 import com.hogwartsartifactsonline.wizard.dto.WizardDTO;
 import org.hamcrest.Matchers;
@@ -114,7 +115,7 @@ class ArtifactControllerTest {
     @Test
     void tesFindArtifactByIdNotFound() throws Exception {
         // Given
-        given(this.artifactService.findById("1250808601744904191")).willThrow(new ArtifactNotFoundException("1250808601744904191"));
+        given(this.artifactService.findById("1250808601744904191")).willThrow(new ObjectNotFoundException("Artifact","1250808601744904191"));
 
         // When and then
         this.mockMvc.perform(get("/api/v1/artifacts/1250808601744904191").accept(MediaType.APPLICATION_JSON))
@@ -178,7 +179,7 @@ class ArtifactControllerTest {
         String artifactId = "invalidId";
         // Mock the artifactService
         ArtifactService artifactService = mock(ArtifactService.class);
-        when(artifactService.findById(artifactId)).thenThrow(new ArtifactNotFoundException(artifactId));
+        when(artifactService.findById(artifactId)).thenThrow(new ObjectNotFoundException("Artifact",artifactId));
         // Mock the artifactToArtifactDTOConverter
         ArtifactToArtifactDTOConverter artifactToArtifactDTOConverter = mock(ArtifactToArtifactDTOConverter.class);
         ArtifactDTOtoArtifactConverter converter2 = mock(ArtifactDTOtoArtifactConverter.class);
@@ -186,7 +187,7 @@ class ArtifactControllerTest {
         ArtifactController controller = new ArtifactController(artifactService, artifactToArtifactDTOConverter, converter2);
 
         // Act
-        Exception exception = assertThrows(ArtifactNotFoundException.class, () -> controller.findArtifactById(artifactId));
+        Exception exception = assertThrows(ObjectNotFoundException.class, () -> controller.findArtifactById(artifactId));
 
         // Assert
         assertEquals("Couldn't found artifact", exception.getMessage());
@@ -199,7 +200,7 @@ class ArtifactControllerTest {
         String artifactId = "invalidId";
         // Act
         ArtifactService artifactService = mock(ArtifactService.class);
-        when(artifactService.findById(artifactId)).thenThrow(new ArtifactNotFoundException(artifactId));
+        when(artifactService.findById(artifactId)).thenThrow(new ObjectNotFoundException("Artifact",artifactId));
         // Mock the artifactToArtifactDTOConverter
         ArtifactToArtifactDTOConverter artifactToArtifactDTOConverter = mock(ArtifactToArtifactDTOConverter.class);
         ArtifactDTOtoArtifactConverter converter2 = mock(ArtifactDTOtoArtifactConverter.class);
@@ -213,7 +214,7 @@ class ArtifactControllerTest {
         assertEquals(StatusCode.SUCCESS, result.getCode().intValue());
         assertEquals("Find All Success", result.getMessage());
         assertTrue(((List) result.getData()).isEmpty());
-        assertEquals(1, ((List) result.getData()).size());
+        assertEquals(0, ((List) result.getData()).size());
     }
 
     @Test
@@ -275,7 +276,7 @@ class ArtifactControllerTest {
                 "Artifact description", "imageURL",null);
         String jsonData = this.objectMapper.writeValueAsString(artifactDTO);
 
-        given(this.artifactService.update(eq("12233"),Mockito.any(Artifact.class))).willThrow(new ArtifactNotFoundException("12233"));
+        given(this.artifactService.update(eq("12233"),Mockito.any(Artifact.class))).willThrow(new ObjectNotFoundException("Artifact","12233"));
         // When and Then
         this.mockMvc.perform(put("/api/v1/artifact/12233").contentType(MediaType.APPLICATION_JSON).content(jsonData).accept(MediaType.APPLICATION_JSON))
 //                .andExpect(jsonPath("$.flag")).value(true)
@@ -302,7 +303,7 @@ class ArtifactControllerTest {
     @Test
     void testDeleteArtifactErrorNotFound() throws Exception {
         // Given
-        doThrow(new ArtifactNotFoundException("12233")).when(this.artifactService).deleteArtifact("12233");
+        doThrow(new ObjectNotFoundException("Artifact","12233")).when(this.artifactService).deleteArtifact("12233");
 
         // When and then
         this.mockMvc.perform(delete("/api/v1/artifact/12233").accept(MediaType.APPLICATION_JSON))

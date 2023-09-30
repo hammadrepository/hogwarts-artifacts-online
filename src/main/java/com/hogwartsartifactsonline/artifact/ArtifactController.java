@@ -51,7 +51,7 @@ public class ArtifactController {
         Artifact update = this.artifactDTOtoArtifactConverter.convert(artifactDTO);
         Artifact updatedArtifact = this.artifactService.update(artifactId, update);
         ArtifactDTO artifactDTO1 = this.artifactToArtifactDTOConverter.convert(updatedArtifact);
-        return new Result(true, StatusCode.SUCCESS, "Update Success",null);
+        return new Result(true, StatusCode.SUCCESS, "Update Success",artifactDTO1);
     }
     @DeleteMapping("/api/v1/artifact/{artifactId}")
     public Result deleteArtifact(@PathVariable String artifactId){
