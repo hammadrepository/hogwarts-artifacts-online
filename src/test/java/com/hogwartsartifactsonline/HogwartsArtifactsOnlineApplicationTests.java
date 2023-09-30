@@ -1,4 +1,4 @@
-package com.hogwartsartifactsonline.hogwartsartifactsonline;
+package com.hogwartsartifactsonline;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
