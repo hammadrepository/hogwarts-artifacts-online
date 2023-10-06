@@ -36,7 +36,7 @@ public class ArtifactService {
     }
 
     public Artifact update(String artifactId, Artifact update){
-         return this.artifactRepository.findById(artifactId).map((oldArtifact)->{
+         return this.artifactRepository.findById(artifactId).map((oldArtifact) -> {
              oldArtifact.setName(update.getName());
              oldArtifact.setDescription(update.getDescription());
              oldArtifact.setImageUrl(update.getImageUrl());
